@@ -22,8 +22,8 @@ export type PartialWithFieldValue<T> =
   | (T extends Primitive
       ? T
       : T extends object
-      ? { [K in keyof T]?: PartialWithFieldValue<T[K]> | FieldValue }
-      : never);
+        ? { [K in keyof T]?: PartialWithFieldValue<T[K]> | FieldValue }
+        : never);
 
 /**
  * Given a union type `U = T1 | T2 | ...`, returns an intersected type (`T1 & T2 & ...`).
@@ -56,9 +56,8 @@ export declare type AddPrefixToKeys<Prefix extends string, T extends Record<stri
  *
  * See https://www.typescriptlang.org/docs/handbook/advanced-types.html#distributive-conditional-types
  */
-export declare type ChildUpdateFields<K extends string, V> = V extends Record<string, unknown>
-  ? AddPrefixToKeys<K, UpdateData<V>>
-  : never;
+export declare type ChildUpdateFields<K extends string, V> =
+  V extends Record<string, unknown> ? AddPrefixToKeys<K, UpdateData<V>> : never;
 
 /**
  * For each field (e.g. 'bar'), find all nested keys (e.g. {'bar.baz': T1, 'bar.qux': T2}).
@@ -78,10 +77,10 @@ export declare type NestedUpdateFields<T extends Record<string, unknown>> = Unio
 export declare type UpdateData<T> = T extends Primitive
   ? T
   : T extends object
-  ? {
-      [K in keyof T]?: UpdateData<T[K]> | FieldValue;
-    } & NestedUpdateFields<T>
-  : Partial<T>;
+    ? {
+        [K in keyof T]?: UpdateData<T[K]> | FieldValue;
+      } & NestedUpdateFields<T>
+    : Partial<T>;
 
 /**
  * Allows FieldValues to be passed in as a property value while maintaining
@@ -92,8 +91,8 @@ export type WithFieldValue<T> =
   | (T extends Primitive
       ? T
       : T extends object
-      ? { [K in keyof T]: WithFieldValue<T[K]> | FieldValue }
-      : never);
+        ? { [K in keyof T]: WithFieldValue<T[K]> | FieldValue }
+        : never);
 
 /**
  * Returns the existing default {@link Firestore} instance that is associated with the

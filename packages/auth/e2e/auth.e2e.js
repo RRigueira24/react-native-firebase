@@ -68,6 +68,7 @@ describe('auth() modular', function () {
           .applyActionCode('fooby shooby dooby')
           .then($ => $);
       });
+
       it('errors on invalid code', async function () {
         try {
           await firebase
@@ -924,16 +925,6 @@ describe('auth() modular', function () {
       });
     });
 
-    describe('signInWithPopup', function () {
-      it('should throw an unsupported error', function () {
-        (() => {
-          firebase.auth().signInWithPopup();
-        }).should.throw(
-          'firebase.auth().signInWithPopup() is unsupported by the native Firebase SDKs.',
-        );
-      });
-    });
-
     describe('sendPasswordResetEmail()', function () {
       it('should not error', async function () {
         const random = Utils.randString(12, '#aA');
@@ -1036,16 +1027,6 @@ describe('auth() modular', function () {
         } finally {
           await firebase.auth().currentUser.delete();
         }
-      });
-    });
-
-    describe('signInWithRedirect()', function () {
-      it('should throw an unsupported error', function () {
-        (() => {
-          firebase.auth().signInWithRedirect();
-        }).should.throw(
-          'firebase.auth().signInWithRedirect() is unsupported by the native Firebase SDKs.',
-        );
       });
     });
 
@@ -1159,7 +1140,25 @@ describe('auth() modular', function () {
 
         secondaryApp.auth().app.name.should.equal('secondaryFromNative');
       });
+
+      it('supports an app initialized with custom authDomain', async function () {
+        const { getAuth, getCustomAuthDomain } = authModular;
+        const { initializeApp } = modular;
+
+        const name = `testscoreapp${FirebaseHelpers.id}`;
+        const platformAppConfig = FirebaseHelpers.app.config();
+        platformAppConfig.authDomain = 'example.com';
+        const newApp = await initializeApp(platformAppConfig, name);
+        const secondaryApp = firebase.app(name);
+        const secondaryAuth = getAuth(secondaryApp);
+        secondaryAuth.app.name.should.equal(name);
+        secondaryApp.auth().app.name.should.equal(name);
+        const customAuthDomain = await getCustomAuthDomain(secondaryAuth);
+        customAuthDomain.should.equal(platformAppConfig.authDomain);
+        return newApp.delete();
+      });
     });
+
     describe('applyActionCode()', function () {
       // Needs a different setup to work against the auth emulator
       xit('works as expected', async function () {
@@ -1167,6 +1166,7 @@ describe('auth() modular', function () {
         const defaultAuth = getAuth(firebase.app());
         await applyActionCode(defaultAuth, 'fooby shooby dooby').then($ => $);
       });
+
       it('errors on invalid code', async function () {
         const { applyActionCode, getAuth } = authModular;
         const defaultAuth = getAuth(firebase.app());
@@ -2010,21 +2010,6 @@ describe('auth() modular', function () {
         });
       });
 
-      describe('signInWithPopup', function () {
-        it('should throw an unsupported error', function () {
-          const { signInWithPopup, getAuth } = authModular;
-          const defaultAuth = getAuth(firebase.app());
-
-          try {
-            signInWithPopup(defaultAuth);
-          } catch (error) {
-            error.message.should.containEql(
-              'signInWithPopup is unsupported by the native Firebase SDKs.',
-            );
-          }
-        });
-      });
-
       describe('sendPasswordResetEmail()', function () {
         it('should not error', async function () {
           const { createUserWithEmailAndPassword, sendPasswordResetEmail, getAuth } = authModular;
@@ -2145,21 +2130,6 @@ describe('auth() modular', function () {
             throw new Error('sendPasswordResetEmail() caused an error', error);
           } finally {
             await defaultAuth.currentUser.delete();
-          }
-        });
-      });
-
-      describe('signInWithRedirect()', function () {
-        it('should throw an unsupported error', function () {
-          const { getAuth, signInWithRedirect } = authModular;
-          const defaultAuth = getAuth(firebase.app());
-
-          try {
-            signInWithRedirect(defaultAuth);
-          } catch (error) {
-            error.message.should.containEql(
-              'signInWithRedirect is unsupported by the native Firebase SDKs.',
-            );
           }
         });
       });

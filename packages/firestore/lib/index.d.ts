@@ -565,7 +565,7 @@ export namespace FirebaseFirestoreTypes {
      *
      * @param fieldPath The path (e.g. 'foo' or 'foo.bar') to a specific field.
      */
-    get<fieldType extends DocumentFieldType>(fieldPath: keyof T | FieldPath): fieldType;
+    get<fieldType extends DocumentFieldType>(fieldPath: keyof T | string | FieldPath): fieldType;
 
     /**
      * Returns true if this `DocumentSnapshot` is equal to the provided one.
@@ -1288,7 +1288,7 @@ export namespace FirebaseFirestoreTypes {
      * @param fieldPath The field to sort by. Either a string or FieldPath instance.
      * @param directionStr Optional direction to sort by (`asc` or `desc`). If not specified, order will be ascending.
      */
-    orderBy(fieldPath: keyof T | FieldPath, directionStr?: 'asc' | 'desc'): Query<T>;
+    orderBy(fieldPath: keyof T | string | FieldPath, directionStr?: 'asc' | 'desc'): Query<T>;
 
     /**
      * Creates and returns a new Query that starts after the provided document (exclusive). The start
@@ -2322,10 +2322,10 @@ export namespace FirebaseFirestoreTypes {
   export type SetValue<T> = T extends Timestamp
     ? Timestamp | Date // allow Date in place of Timestamp
     : T extends object
-    ? {
-        [P in keyof T]: SetValue<T[P]> | FieldValue; // allow FieldValue in place of values
-      }
-    : T;
+      ? {
+          [P in keyof T]: SetValue<T[P]> | FieldValue; // allow FieldValue in place of values
+        }
+      : T;
 }
 
 declare const defaultExport: ReactNativeFirebase.FirebaseModuleWithStaticsAndApp<

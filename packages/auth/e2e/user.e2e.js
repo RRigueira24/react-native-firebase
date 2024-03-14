@@ -428,6 +428,7 @@ describe('auth().currentUser', function () {
         }
         await firebase.auth().currentUser.delete();
       });
+
       it('should error if actionCodeSettings.url is not present', async function () {
         const random = Utils.randString(12, '#aA');
         const random2 = Utils.randString(12, '#aA');
@@ -672,6 +673,7 @@ describe('auth().currentUser', function () {
         return Promise.resolve();
       });
     });
+
     describe('unlink()', function () {
       it('should unlink the email address', async function () {
         const random = Utils.randString(12, '#aA');
@@ -881,30 +883,6 @@ describe('auth().currentUser', function () {
       });
     });
 
-    describe('linkWithPopup()', function () {
-      it('should throw an unsupported error', async function () {
-        await firebase.auth().signInAnonymously();
-        (() => {
-          firebase.auth().currentUser.linkWithPopup();
-        }).should.throw(
-          'firebase.auth.User.linkWithPopup() is unsupported by the native Firebase SDKs.',
-        );
-        await firebase.auth().signOut();
-      });
-    });
-
-    describe('linkWithRedirect()', function () {
-      it('should throw an unsupported error', async function () {
-        await firebase.auth().signInAnonymously();
-        (() => {
-          firebase.auth().currentUser.linkWithRedirect();
-        }).should.throw(
-          'firebase.auth.User.linkWithRedirect() is unsupported by the native Firebase SDKs.',
-        );
-        await firebase.auth().signOut();
-      });
-    });
-
     describe('reauthenticateWithPhoneNumber()', function () {
       it('should throw an unsupported error', async function () {
         await firebase.auth().signInAnonymously();
@@ -912,30 +890,6 @@ describe('auth().currentUser', function () {
           firebase.auth().currentUser.reauthenticateWithPhoneNumber();
         }).should.throw(
           'firebase.auth.User.reauthenticateWithPhoneNumber() is unsupported by the native Firebase SDKs.',
-        );
-        await firebase.auth().signOut();
-      });
-    });
-
-    describe('reauthenticateWithPopup()', function () {
-      it('should throw an unsupported error', async function () {
-        await firebase.auth().signInAnonymously();
-        (() => {
-          firebase.auth().currentUser.reauthenticateWithPopup();
-        }).should.throw(
-          'firebase.auth.User.reauthenticateWithPopup() is unsupported by the native Firebase SDKs.',
-        );
-        await firebase.auth().signOut();
-      });
-    });
-
-    describe('reauthenticateWithRedirect()', function () {
-      it('should throw an unsupported error', async function () {
-        await firebase.auth().signInAnonymously();
-        (() => {
-          firebase.auth().currentUser.reauthenticateWithRedirect();
-        }).should.throw(
-          'firebase.auth.User.reauthenticateWithRedirect() is unsupported by the native Firebase SDKs.',
         );
         await firebase.auth().signOut();
       });
@@ -1994,39 +1948,6 @@ describe('auth().currentUser', function () {
       });
     });
 
-    describe('linkWithPopup()', function () {
-      it('should throw an unsupported error', async function () {
-        const { getAuth, signInAnonymously, signOut, linkWithPopup } = authModular;
-        const auth = getAuth();
-
-        await signInAnonymously(auth);
-        try {
-          await linkWithPopup(auth.currentUser);
-        } catch (e) {
-          e.message.should.containEql('linkWithPopup is unsupported by the native Firebase SDKs');
-        }
-        await signOut(auth);
-      });
-    });
-
-    describe('linkWithRedirect()', function () {
-      it('should throw an unsupported error', async function () {
-        const { getAuth, signInAnonymously, signOut, linkWithRedirect } = authModular;
-        const auth = getAuth();
-
-        await signInAnonymously(auth);
-        await signInAnonymously(auth);
-        try {
-          await linkWithRedirect(auth.currentUser);
-        } catch (e) {
-          e.message.should.containEql(
-            'linkWithRedirect is unsupported by the native Firebase SDKs',
-          );
-        }
-        await signOut(auth);
-      });
-    });
-
     describe('reauthenticateWithPhoneNumber()', function () {
       it('should throw an unsupported error', async function () {
         const { getAuth, signInAnonymously, signOut, reauthenticateWithPhoneNumber } = authModular;
@@ -2038,40 +1959,6 @@ describe('auth().currentUser', function () {
         } catch (e) {
           e.message.should.containEql(
             'reauthenticateWithPhoneNumber is unsupported by the native Firebase SDKs',
-          );
-        }
-        await signOut(auth);
-      });
-    });
-
-    describe('reauthenticateWithPopup()', function () {
-      it('should throw an unsupported error', async function () {
-        const { getAuth, signInAnonymously, signOut, reauthenticateWithPopup } = authModular;
-        const auth = getAuth();
-
-        await signInAnonymously(auth);
-        try {
-          await reauthenticateWithPopup(auth.currentUser);
-        } catch (e) {
-          e.message.should.containEql(
-            'reauthenticateWithPopup is unsupported by the native Firebase SDKs',
-          );
-        }
-        await signOut(auth);
-      });
-    });
-
-    describe('reauthenticateWithRedirect()', function () {
-      it('should throw an unsupported error', async function () {
-        const { getAuth, signInAnonymously, signOut, reauthenticateWithRedirect } = authModular;
-        const auth = getAuth();
-
-        await signInAnonymously(auth);
-        try {
-          await reauthenticateWithRedirect(auth.currentUser);
-        } catch (e) {
-          e.message.should.containEql(
-            'reauthenticateWithRedirect is unsupported by the native Firebase SDKs',
           );
         }
         await signOut(auth);

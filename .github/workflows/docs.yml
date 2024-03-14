@@ -21,41 +21,31 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - name: Set workflow variables
-        id: workflow-variables
-        run: echo "yarn-cache-dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         name: Yarn Cache Restore
         id: yarn-cache
         with:
-          path: ${{ steps.workflow-variables.outputs.yarn-cache-dir }}
+          path: .yarn/cache
           key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-v1
       - name: Yarn Install
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 15
           retry_wait_seconds: 30
           max_attempts: 3
-          command: yarn --no-audit --prefer-offline
+          command: yarn
       - name: Lint
         run: yarn lint:markdown
-      - name: Install Dependencies
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 10
-          retry_wait_seconds: 60
-          max_attempts: 3
-          command: sudo npm install --global spellchecker-cli
       - name: Spell check
         run: |
           yarn lint:spellcheck
-      - uses: actions/cache/save@v3
+      - uses: actions/cache/save@v4
         name: Yarn Cache Save
         if: "${{ github.ref == 'refs/heads/main' }}"
         with:
-          path: ${{ steps.workflow-variables.outputs.yarn-cache-dir }}
+          path: .yarn/cache
           key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
